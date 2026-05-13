@@ -6,6 +6,11 @@
     "dev:be": "pnpm --filter be run dev",
     "dev:fe": "pnpm --filter fe run dev",
     "build": "pnpm -r run build",
-    "build:fe": "pnpm --filter fe run build"
+    "build:fe": "pnpm --filter fe run build",
+    "test": "pnpm -r run test",
+    "test:be": "pnpm --filter be run test"
+  },
+  "dependencies": {
+    "@flow/db": "workspace:*"
   }
 }
