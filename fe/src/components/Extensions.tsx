@@ -4,7 +4,8 @@ import Chip from "./Chip";
 import Icon from "./Icon";
 import useExtension from "@/hooks/useExtension";
 import { CUSTOM_MAX } from "@/rules";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import useValidator from "@/hooks/useValidator";
 
 
 type Extension = {
@@ -20,38 +21,57 @@ type Extensions = {
 
 function Extensions() {
   const { getExtensions, createCustomExt, updateFixedExt, deleteCustomExt } = useExtension();
+  const { validateExtension } = useValidator();
 
   const [extensions, setExtensions] = useState<Extensions>({ fixed: [], custom: [] });
   const [newExtension, setNewExtension] = useState("");
+  const [error, setError] = useState(null);
+  
+  const disabled = !newExtension || error;
 
 
   /* API */
   
   const fetchExtensions = async () => {
-    const data = await getExtensions();
+    const { data, error } = await getExtensions();
     setExtensions(data);
+    setError(error?.message);
   }
+
+  /* Refs */
+
+  const chipsRef = useRef<HTMLDivElement>(null);
 
 
   /* Handlers */
 
   const handleCheckFixedExt = async (name: string, checked: boolean) => {
-    await updateFixedExt(name, checked); await fetchExtensions();
+    const { error } = await updateFixedExt(name, checked);
+    setError(error?.message);
+    await fetchExtensions();
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    void setNewExtension(e.target.value);
+    setNewExtension(e.target.value);
+    setError(validateExtension(e.target.value));
   };
 
   const handleAddCustomExt = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await createCustomExt(newExtension);
+
+    if (disabled) return;
+
+    const { error } = await createCustomExt(newExtension);
+    if (error) { setError(error.message); return; } 
+
     setNewExtension("");
     await fetchExtensions();
+    chipsRef.current?.scrollTo({ top: chipsRef.current.scrollHeight, behavior: "smooth" });
   }
 
   const handleRemoveCustomExt = async(name: string) => {
-    await deleteCustomExt(name);
+    const { error } = await deleteCustomExt(name);
+    setError(error?.message);
     await fetchExtensions();
   }
 
@@ -80,15 +100,18 @@ function Extensions() {
         <div className={styles.header}>커스텀 확장자</div>
         <div className={styles.custom}>
           <form className={styles.field} onSubmit={handleAddCustomExt}>
-            <input type="text" placeholder="확장자 입력" value={newExtension} onChange={handleInputChange} />
-            <button type="submit" className={cls("button", newExtension || "disabled")}>
+            <div className={styles.inputWrapper}>
+              <input type="text" placeholder="확장자 입력" value={newExtension} onChange={handleInputChange} />
+              {error && <div className="error">{error}</div>}
+            </div>
+            <button type="submit" className={cls("button", disabled && "disabled")}>
               <Icon name="add" />
               <span>추가</span>
             </button>
           </form>
           <div className={styles.chipWrapper}>
             <label className={styles.count}>{extensions.custom.length}/{CUSTOM_MAX}</label>
-            <div className={styles.chips}>
+            <div className={styles.chips} ref={chipsRef}>
               {extensions.custom.map((ext) => (
                 <Chip 
                   key={ext.name}

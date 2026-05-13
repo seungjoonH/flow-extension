@@ -18,3 +18,8 @@ export class BadRequestError extends HttpError {
 export class NotFoundError extends HttpError {
   constructor(message) { super(STATUS.NOT_FOUND, message ?? MESSAGES.NOT_FOUND); }
 }
+
+// 409
+export class ConflictError extends HttpError {
+  constructor(message) { super(STATUS.CONFLICT, message ?? MESSAGES.CONFLICT); }
+}

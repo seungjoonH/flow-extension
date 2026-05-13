@@ -1,5 +1,5 @@
 import * as repo from "#src/repository";
-import { BadRequestError, NotFoundError } from "#src/response/error";
+import { BadRequestError, ConflictError, NotFoundError } from "#src/response/error";
 import { EXT_MESSAGES } from "#src/response/status";
 import { CUSTOM_MAX, CUSTOM_NAME_MAX } from "#src/rules";
 
@@ -21,11 +21,13 @@ export const postExtsCustom = (body) => {
   // conditions
   const LONG_NAME = name && name.length > CUSTOM_NAME_MAX;
   const COUNT_EXCEEDED = repo.getCustomExts().length >= CUSTOM_MAX;
+  const NAME_EXISTS = repo.getExt(name);
 
   // 사전 throws
   if (!name) throw new BadRequestError(EXT_MESSAGES.NAME_REQUIRED);
   if (LONG_NAME) throw new BadRequestError(EXT_MESSAGES.NAME_TOO_LONG);
   if (COUNT_EXCEEDED) throw new BadRequestError(EXT_MESSAGES.LIST_FULL);
+  if (NAME_EXISTS) throw new ConflictError(EXT_MESSAGES.NAME_ALREADY_EXISTS);
 
   // 메인 로직
   const { changes: created } = repo.createCustomExt(name);

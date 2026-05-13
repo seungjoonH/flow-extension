@@ -2,7 +2,7 @@ import { db } from "@flow/db";
 
 /* 조회 관련 */
 
-// 확장자 조회
+// 확장자 목록 조회
 const getExts = (fixed) => {
   return db.prepare("SELECT * FROM exts WHERE fixed = ?").all(fixed);
 };
@@ -10,6 +10,11 @@ const getExts = (fixed) => {
 export const getFixedExts = () => getExts(1);  // 고정 확장자 조회
 export const getCustomExts = () => getExts(0); // 커스텀 확장자 조회
 
+
+// 확장자 단일 조회
+export const getExt = (name) => {
+  return db.prepare("SELECT * FROM exts WHERE name = ?").get(name);
+};
 
 /* 추가 관련 */
 
