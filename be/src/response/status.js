@@ -15,6 +15,9 @@ export const MESSAGES = {
 };
 
 export const EXT_MESSAGES = {
+  NAME_REQUIRED: "Extension name is required",
+  CHECKED_REQUIRED: "Checked is required",
   NAME_TOO_LONG: "Extension name must be at most 20 characters",
   LIST_FULL: "Custom extensions cannot exceed 200 items",
+  NOT_FOUND: "Extension not found",
 };

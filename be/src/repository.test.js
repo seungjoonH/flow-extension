@@ -11,20 +11,20 @@ describe("repository", () => {
   });
 
   describe("2. 모든 고정 확장자 리스트가 default 값이 unchecked 인가?", () => {
-    it("초기 조회 시 고정 항목은 모두 checked === false 이다", () => {
+    it("초기 조회 시 고정 항목은 모두 checked === 0 이다", () => {
       const fixed = repo.getFixedExts();
       expect(fixed.length).toBe(FIXED_EXT_NAMES.length);
-      expect(fixed.every((r) => !r.checked)).toBe(true);
+      expect(fixed.every((r) => r.checked === 0)).toBe(true);
     });
   });
 
   describe("3. 고정 확장자를 check or uncheck 할 경우, db 에 반영이 되는가?", () => {
     it("체크 후 조회하면 true, 다시 해제 후 조회하면 false 로 유지된다", () => {
-      repo.patchFixedExt("bat", true);
+      repo.updateFixedExt("bat", true);
       expect(
         Boolean(repo.getFixedExts().find((r) => r.name === "bat")?.checked),
       ).toBe(true);
-      repo.patchFixedExt("bat", false);
+      repo.updateFixedExt("bat", false);
       expect(
         Boolean(repo.getFixedExts().find((r) => r.name === "bat")?.checked),
       ).toBe(false);
@@ -34,8 +34,8 @@ describe("repository", () => {
   describe("4. 동일한 커스텀 확장자 이름을 두 번 저장하면 DB 가 거부하는가?", () => {
     it("두 번째 INSERT 는 UNIQUE 제약으로 실패한다", () => {
       const name = `dup-${Date.now()}`;
-      expect(repo.postCustomExt(name).changes).toBe(1);
-      expect(() => repo.postCustomExt(name)).toThrow(/constraint|UNIQUE/i);
+      expect(repo.createCustomExt(name).changes).toBe(1);
+      expect(() => repo.createCustomExt(name)).toThrow(/constraint|UNIQUE/i);
       repo.deleteCustomExt(name);
     });
   });
@@ -43,7 +43,7 @@ describe("repository", () => {
   describe("5. 커스텀 확장자를 추가할 수 있는가?", () => {
     it("INSERT changes 가 1이고 조회 목록에 해당 이름이 있다", () => {
       const name = `add-${Date.now()}`;
-      const out = repo.postCustomExt(name);
+      const out = repo.createCustomExt(name);
       expect(out.changes).toBe(1);
       expect(repo.getCustomExts().map((c) => c.name)).toContain(name);
       repo.deleteCustomExt(name);
@@ -55,7 +55,7 @@ describe("repository", () => {
       const start = repo.getCustomExts().length;
       const ts = Date.now();
       for (let i = 0; i < CUSTOM_MAX - start; i++) {
-        repo.postCustomExt(`fill-${ts}-${i}`);
+        repo.createCustomExt(`fill-${ts}-${i}`);
       }
       expect(repo.getCustomExts().length).toBe(CUSTOM_MAX);
       for (let i = 0; i < CUSTOM_MAX - start; i++) {
@@ -72,7 +72,7 @@ describe("repository", () => {
         custom = repo.getCustomExts();
       }
       const name = `del-${Date.now()}`;
-      repo.postCustomExt(name);
+      repo.createCustomExt(name);
       expect(repo.getCustomExts().some((c) => c.name === name)).toBe(true);
       repo.deleteCustomExt(name);
       expect(repo.getCustomExts().some((c) => c.name === name)).toBe(false);

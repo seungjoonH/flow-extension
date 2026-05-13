@@ -49,19 +49,20 @@ describe("routers /api/exts", () => {
 
   it("PATCH /api/exts/fixed/:name returns 200", async () => {
     const res = await request(app)
-      .patch("/api/exts/fixed/foo")
-      .send({ enabled: true })
+      .patch("/api/exts/fixed/bat")
+      .send({ checked: true })
       .expect(200);
 
     expect(res.body).toMatchObject({
       ok: true,
       status: 200,
-      data: { name: "foo", enabled: true },
+      data: { name: "bat", checked: true },
       error: null,
     });
   });
 
   it("DELETE /api/exts/custom/:name returns 200", async () => {
+    await request(app).post("/api/exts/custom").send({ name: "bar" }).expect(201);
     const res = await request(app).delete("/api/exts/custom/bar").expect(200);
 
     expect(res.body).toEqual({
