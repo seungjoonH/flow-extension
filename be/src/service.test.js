@@ -2,8 +2,7 @@ import { FIXED_EXT_NAMES } from "@flow/db";
 import { CUSTOM_MAX, CUSTOM_NAME_MAX } from "#src/rules";
 import * as service from "#src/service";
 import { HttpError } from "#src/response/error";
-import { STATUS } from "#src/response/status";
-import { EXT_MESSAGES } from "#src/ext";
+import { EXT_MESSAGES, STATUS } from "#src/response/status";
 
 describe("과제 요구사항", () => {
   describe("1. 고정 확장자 리스트가 bat, cmd, com, cpl, exe, scr, js 인가?", () => {

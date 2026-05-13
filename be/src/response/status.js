@@ -13,3 +13,8 @@ export const MESSAGES = {
   NOT_FOUND: "Not Found",
   INTERNAL_SERVER_ERROR: "Internal Server Error",
 };
+
+export const EXT_MESSAGES = {
+  NAME_TOO_LONG: "Extension name must be at most 20 characters",
+  LIST_FULL: "Custom extensions cannot exceed 200 items",
+};
