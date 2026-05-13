@@ -18,10 +18,12 @@
 }
 
 .header {
+  padding-top: 4px;
   min-width: 100px;
   max-width: 120px;
   font-weight: 700;
   font-size: 14px;
+  color: #444;
 }
 
 .fixed {
@@ -35,22 +37,21 @@
 .custom {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 24px;
   min-width: 0;
   flex: 1 1 auto;
 }
 
 .field {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
 }
 
 .field button {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
 }
 
 .field button img {
@@ -60,30 +61,50 @@
 
 .field button span {
   width: max-content;
-  font-size: 12px;
+  font-size: 14px;
+  margin-left: 4px;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .chipWrapper {
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
   min-width: 0;
   height: 280px;
-  padding: 8px 12px;
-  border: 1px solid #999;
+  border: 1px solid #ddd;
   gap: 4px;
   border-radius: 4px;
-  overflow-y: scroll
+  background-color: #fefefe;
 }
 
 .count {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  padding: 4px 8px;
   font-size: 14px;
   color: #888;
+  width: 100%;
+  background-color: #fafafa;
+  border-bottom: 1px solid #ddd;
 }
 
 .chips {
+  position: relative;
+  margin-top: 28px;
   display: flex;
   flex-wrap: wrap;
   align-content: flex-start;
   gap: 8px;
+  padding: 8px 12px;
+  overflow-x: hidden;
+  overflow-y: scroll;
 }
