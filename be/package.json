@@ -1,0 +1,14 @@
+{
+  "name": "be",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch app.js"
+  },
+  "imports": {
+    "#src/*": "./src/*.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}

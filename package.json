@@ -1,0 +1,11 @@
+{
+  "name": "flow",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm -r --parallel run dev",
+    "dev:be": "pnpm --filter be run dev",
+    "dev:fe": "pnpm --filter fe run dev",
+    "build": "pnpm -r run build",
+    "build:fe": "pnpm --filter fe run build"
+  }
+}
