@@ -14,6 +14,9 @@ importers:
 
   be:
     dependencies:
+      '@flow/db':
+        specifier: workspace:*
+        version: link:../db
       express:
         specifier: ^5.2.1
         version: 5.2.1

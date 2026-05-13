@@ -1,4 +1,4 @@
-import { MESSAGES, STATUS } from "#src/response/status";
+import { STATUS } from "#src/response/status";
 
 function sendResponse(res, ok, status, data, error) {
   return res.status(status).json({

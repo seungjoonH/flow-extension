@@ -11,5 +11,5 @@ export const patchExtsFixed = (name, body) => {
 };
 
 export const deleteExtsCustom = (name) => {
-  return { name: name ?? ""  };
+  return { name: name ?? "" };
 };

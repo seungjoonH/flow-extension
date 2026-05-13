@@ -4,6 +4,7 @@ import router from "#src/routers";
 import { NotFoundError } from "#src/response/error";
 import { sendError } from "#src/response/send";
 import { MESSAGES, STATUS } from "#src/response/status";
+import { FIXED_EXT_NAMES } from "@flow/db";
 
 function createApp() {
   const app = express();
@@ -24,12 +25,12 @@ describe("routers /api/exts", () => {
 
   it("GET /api/exts returns envelope", async () => {
     const res = await request(app).get("/api/exts").expect(200);
-    expect(res.body).toEqual({
-      ok: true,
-      status: 200,
-      data: { fixed: [], custom: [] },
-      error: null,
-    });
+    expect(res.body.ok).toBe(true);
+    expect(res.body.status).toBe(200);
+    expect(res.body.error).toBe(null);
+    expect(res.body.data.custom).toEqual([]);
+    expect(res.body.data.fixed.map((r) => r.name)).toEqual([...FIXED_EXT_NAMES]);
+    expect(res.body.data.fixed.every((r) => r.checked === false)).toBe(true);
   });
 
   it("POST /api/exts/custom returns 201", async () => {

@@ -10,6 +10,7 @@
     "#src/*": "./src/*.js"
   },
   "dependencies": {
+    "@flow/db": "workspace:*",
     "express": "^5.2.1"
   },
   "devDependencies": {
