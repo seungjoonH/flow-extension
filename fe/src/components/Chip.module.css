@@ -1,0 +1,32 @@
+.chip {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 4px 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #aaa;
+  color: #888;
+  cursor: default;
+}
+
+.label {
+  font-size: 12px;
+}
+
+.close {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  line-height: 0;
+  color: #555;
+}
+
+.closeIcon {
+  display: block;
+  pointer-events: none;
+}

@@ -1,0 +1,23 @@
+
+.checkbox {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-width: max-content;
+  padding: 2px 4px;
+}
+
+.checkbox input[type="checkbox"] {
+  accent-color: #777;
+  transition: all .2s ease-in-out;
+}
+
+
+.label {
+  min-width: 0;
+  padding-left: 4px;
+  flex: 1 1 auto;
+  font-size: 14px;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
