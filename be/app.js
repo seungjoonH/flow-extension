@@ -3,9 +3,12 @@ import router from "#src/routers";
 import { NotFoundError } from "#src/response/error";
 import { sendError } from "#src/response/send";
 import { MESSAGES, STATUS } from "#src/response/status";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
-const PORT = 1245;
+const PORT = process.env.PORT;
 
 app.use(express.json());
 
