@@ -1,0 +1,84 @@
+import express from "express";
+import request from "supertest";
+import router from "#src/routers";
+import { NotFoundError } from "#src/response/error";
+import { sendError } from "#src/response/send";
+import { MESSAGES, STATUS } from "#src/response/status";
+
+function createApp() {
+  const app = express();
+  app.use(express.json());
+  app.use(router);
+  app.use((_req, _res, next) => next(new NotFoundError()));
+  app.use((err, _req, res, _next) => {
+    const status = err.status ?? STATUS.INTERNAL_SERVER_ERROR;
+    const message = status >= 500 ? MESSAGES.INTERNAL_SERVER_ERROR : err.message;
+    sendError(res, status, message);
+  });
+  
+  return app;
+}
+
+describe("routers /api/exts", () => {
+  const app = createApp();
+
+  it("GET /api/exts returns envelope", async () => {
+    const res = await request(app).get("/api/exts").expect(200);
+    expect(res.body).toEqual({
+      ok: true,
+      status: 200,
+      data: { fixed: [], custom: [] },
+      error: null,
+    });
+  });
+
+  it("POST /api/exts/custom returns 201", async () => {
+    const res = await request(app)
+      .post("/api/exts/custom")
+      .send({ name: "x" })
+      .expect(201);
+
+    expect(res.body).toEqual({
+      ok: true,
+      status: 201,
+      data: { name: "x" },
+      error: null,
+    });
+  });
+
+  it("PATCH /api/exts/fixed/:name returns 200", async () => {
+    const res = await request(app)
+      .patch("/api/exts/fixed/foo")
+      .send({ enabled: true })
+      .expect(200);
+
+    expect(res.body).toMatchObject({
+      ok: true,
+      status: 200,
+      data: { name: "foo", enabled: true },
+      error: null,
+    });
+  });
+
+  it("DELETE /api/exts/custom/:name returns 200", async () => {
+    const res = await request(app).delete("/api/exts/custom/bar").expect(200);
+
+    expect(res.body).toEqual({
+      ok: true,
+      status: 200,
+      data: { name: "bar" },
+      error: null,
+    });
+  });
+
+  it("unknown path returns 404 envelope", async () => {
+    const res = await request(app).get("/api/nope").expect(404);
+
+    expect(res.body).toEqual({
+      ok: false,
+      status: 404,
+      data: null,
+      error: { message: MESSAGES.NOT_FOUND },
+    });
+  });
+});
