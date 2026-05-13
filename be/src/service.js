@@ -13,10 +13,3 @@ export const patchExtsFixed = (name, body) => {
 export const deleteExtsCustom = (name) => {
   return { name: name ?? ""  };
 };
-
-export default {
-  getExts,
-  postExtsCustom,
-  patchExtsFixed,
-  deleteExtsCustom,
-};
