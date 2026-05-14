@@ -20,7 +20,7 @@ type Extensions = {
 
 
 function Extensions() {
-  const { getExtensions, createCustomExt, updateFixedExt, deleteCustomExt } = useExtension();
+  const { getExtensions, createCustomExt, updateFixedExt, deleteCustomExt, deleteAllCustomExts } = useExtension();
   const { validateExtension } = useValidator();
 
   const [extensions, setExtensions] = useState<Extensions>({ fixed: [], custom: [] });
@@ -78,6 +78,12 @@ function Extensions() {
     await fetchExtensions();
   }
 
+  const handleClearCustomExt = async () => {
+    const { error } = await deleteAllCustomExts();
+    setError(error?.message);
+    await fetchExtensions();
+  }
+
   /* Effects */
 
   useEffect(() => { fetchExtensions() }, []); 
@@ -113,7 +119,10 @@ function Extensions() {
             </button>
           </form>
           <div className={styles.chipWrapper}>
-            <label className={styles.count}>{extensions.custom.length}/{CUSTOM_MAX}</label>
+            <div className={styles.chipHeader}>
+              <label className={styles.count}>{extensions.custom.length}/{CUSTOM_MAX}</label>
+              <button type="button" className={styles.clear} onClick={handleClearCustomExt}>모두 삭제</button>
+            </div>
             <div className={styles.chips} ref={chipsRef}>
               {extensions.custom.map((ext) => (
                 <Chip 

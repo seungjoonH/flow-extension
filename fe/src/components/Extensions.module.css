@@ -85,8 +85,12 @@
   background-color: #fefefe;
 }
 
-.count {
+.chipHeader {
   position: absolute;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
   top: 0px;
   left: 0px;
   padding: 4px 8px;
@@ -95,6 +99,21 @@
   width: 100%;
   background-color: #fafafa;
   border-bottom: 1px solid #ddd;
+}
+
+.clear {
+  all: unset;
+  color: #999;
+  cursor: pointer;
+  transition: all .2s ease-in-out;
+}
+
+.clear:hover {
+  color: #555;
+}
+
+.clear:active {
+  transform: scale(.98);
 }
 
 .chips {

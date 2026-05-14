@@ -17,6 +17,10 @@ function useExtension() {
     return await patch(`${BASE_URL}/fixed/${name}`, { checked });
   };
 
+  const deleteAllCustomExts = async () => {
+    return await del(`${BASE_URL}/custom`);
+  };
+
   const deleteCustomExt = async (name: string) => {
     return await del(`${BASE_URL}/custom/${name}`);
   };
@@ -26,6 +30,7 @@ function useExtension() {
     createCustomExt,
     updateFixedExt,
     deleteCustomExt,
+    deleteAllCustomExts,
   };
 }
 
