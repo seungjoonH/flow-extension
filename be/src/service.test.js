@@ -6,14 +6,14 @@ import { EXT_MESSAGES, STATUS } from "#src/response/status";
 
 describe("과제 요구사항", () => {
   describe("1. 고정 확장자 리스트가 bat, cmd, com, cpl, exe, scr, js 인가?", () => {
-    it("고정 확장자 이름 목록이 위 7개와 동일한 순서 및 구성이다", () => {
+    it("고정 확장자 이름 목록이 위 7개와 동일한 순서 및 구성인가?", () => {
       const { fixed } = service.getExts();
       expect(fixed.map((r) => r.name)).toEqual([...FIXED_EXT_NAMES]);
     });
   });
 
   describe("2. 모든 고정 확장자 리스트가 default 값이 unchecked 인가?", () => {
-    it("초기 조회 시 고정 항목은 모두 checked === false 이다", () => {
+    it("초기 조회 시 고정 항목은 모두 checked === false 인가?", () => {
       const { fixed } = service.getExts();
       expect(fixed.length).toBe(FIXED_EXT_NAMES.length);
       expect(fixed.every((r) => !r.checked)).toBe(true);
@@ -21,7 +21,7 @@ describe("과제 요구사항", () => {
   });
 
   describe("3. 고정 확장자를 check or uncheck 할 경우, 변경이 영속되는가?", () => {
-    it("체크 후 조회하면 true, 다시 해제 후 조회하면 false 로 유지된다", () => {
+    it("체크 후 조회하면 true, 다시 해제 후 조회하면 false 로 유지되는가?", () => {
       service.patchExtsFixed("bat", { checked: true });
       expect(service.getExts().fixed.find((r) => r.name === "bat")?.checked).toBe(true);
       service.patchExtsFixed("bat", { checked: false });
@@ -30,7 +30,7 @@ describe("과제 요구사항", () => {
   });
 
   describe("4. 20자 이상의 커스텀 확장자가 들어올 경우, 작업을 중지하고 올바른 에러를 전달하는가?", () => {
-    it("21자 이상이면 HttpError(BAD_REQUEST)와 안내 메시지를 던진다", () => {
+    it("21자 이상이면 HttpError(BAD_REQUEST)와 안내 메시지를 던지는가?", () => {
       const name = "a".repeat(CUSTOM_NAME_MAX + 1);
       expect(() => service.postExtsCustom({ name })).toThrow(error.HttpError);
       try { service.postExtsCustom({ name }); } 
@@ -42,7 +42,7 @@ describe("과제 요구사항", () => {
   });
 
   describe("5. 커스텀 확장자를 추가할 수 있는가?", () => {
-    it("추가 후 GET 응답의 custom 목록에 해당 이름이 포함된다", () => {
+    it("추가 후 GET 응답의 custom 목록에 해당 이름이 포함되는가?", () => {
       const name = `add${Date.now()}`;
       service.postExtsCustom({ name });
       expect(service.getExts().custom.map((c) => c.name)).toContain(name);
@@ -50,7 +50,7 @@ describe("과제 요구사항", () => {
   });
 
   describe("6. 200개를 초과하여 커스텀 확장자를 추가하면 작업을 중지하고 올바른 에러를 전달하는가?", () => {
-    it("커스텀이 200건일 때 신규 이름 추가 시 HttpError(BAD_REQUEST)와 안내 메시지", () => {
+    it("커스텀이 200건일 때 신규 이름 추가 시 HttpError(BAD_REQUEST)와 안내 메시지를 던지는가?", () => {
       const start = service.getExts().custom.length;
       const ts = Date.now();
       for (let i = 0; i < CUSTOM_MAX - start; i++) service.postExtsCustom({ name: `c${i}x${ts}` });
@@ -64,7 +64,7 @@ describe("과제 요구사항", () => {
   });
 
   describe("7. 커스텀 확장자를 삭제할 수 있는가?", () => {
-    it("삭제 후 조회 목록에 해당 이름이 없다", () => {
+    it("삭제 후 조회 목록에 해당 이름이 없는가?", () => {
       let { custom } = service.getExts();
       if (custom.length >= CUSTOM_MAX) service.deleteExtsCustom(custom[0].name);
       const name = `del${Date.now()}`;
@@ -78,7 +78,7 @@ describe("과제 요구사항", () => {
 
 describe("추가 구현 사항", () => {
   describe("커스텀 추가 요청이 고정 확장자와 이름이 겹칠 때", () => {
-    it("고정 확장자가 꺼져 있으면 커스텀 목록에 넣지 않고, 해당 고정 항목만 켠다", () => {
+    it("고정 확장자가 꺼져 있으면 커스텀 목록에 넣지 않고 해당 고정 항목만 켜지는가?", () => {
       service.patchExtsFixed("js", { checked: false });
       expect(service.getExts().custom.some((c) => c.name === "js")).toBe(false);
 
@@ -90,7 +90,7 @@ describe("추가 구현 사항", () => {
       service.patchExtsFixed("js", { checked: false });
     });
 
-    it("커스텀 추가로 고정 항목을 켠 뒤, 같은 이름으로 다시 추가하면 이미 체크되었다는 안내로 거절한다", () => {
+    it("커스텀 추가로 고정 항목을 켠 뒤 같은 이름으로 다시 추가하면 이미 체크되었다는 안내로 거절하는가?", () => {
       service.patchExtsFixed("exe", { checked: false });
       service.postExtsCustom({ name: "exe" });
       expect(service.getExts().fixed.find((r) => r.name === "exe")?.checked).toBe(true);
@@ -102,7 +102,7 @@ describe("추가 구현 사항", () => {
       service.patchExtsFixed("exe", { checked: false });
     });
 
-    it("고정 확장자가 이미 켜져 있는데 같은 이름으로 커스텀을 추가하면, 이미 체크되었다는 안내로 거절한다", () => {
+    it("고정 확장자가 이미 켜져 있는데 같은 이름으로 커스텀을 추가하면 이미 체크되었다는 안내로 거절하는가?", () => {
       service.patchExtsFixed("cmd", { checked: true });
 
       expect(() => service.postExtsCustom({ name: "cmd" })).toThrow();
@@ -126,7 +126,7 @@ describe("에러 처리", () => {
       }
     });
 
-    it("이미 존재하는 커스텀 확장자면 이미 존재 안내로 거절한다", () => {
+    it("이미 존재하는 커스텀 확장자면 이미 존재 안내로 거절하는가?", () => {
       const name = `dup${Date.now()}`;
       service.postExtsCustom({ name });
       expect(() => service.postExtsCustom({ name })).toThrow();
@@ -189,7 +189,7 @@ describe("에러 처리", () => {
 });
 
 describe("전체 삭제", () => {
-  it("deleteExtsCustomAll 호출 시 커스텀 목록이 비고 고정 확장자 행은 유지된다", () => {
+  it("deleteExtsCustomAll 호출 시 커스텀 목록이 비고 고정 확장자 행이 유지되는가?", () => {
     const ts = Date.now();
     service.postExtsCustom({ name: `walla${ts}` });
     service.postExtsCustom({ name: `wallb${ts}` });

@@ -23,7 +23,7 @@ function createApp() {
 describe("routers /api/exts", () => {
   const app = createApp();
 
-  it("GET /api/exts returns envelope", async () => {
+  it("GET /api/exts 가 envelope 로 200 을 반환하는가?", async () => {
     const res = await request(app).get("/api/exts").expect(200);
     expect(res.body.ok).toBe(true);
     expect(res.body.status).toBe(200);
@@ -33,7 +33,7 @@ describe("routers /api/exts", () => {
     expect(res.body.data.fixed.every((r) => r.checked === false)).toBe(true);
   });
 
-  it("POST /api/exts/custom returns 201", async () => {
+  it("POST /api/exts/custom 가 201 을 반환하는가?", async () => {
     const res = await request(app)
       .post("/api/exts/custom")
       .send({ name: "x" })
@@ -47,7 +47,7 @@ describe("routers /api/exts", () => {
     });
   });
 
-  it("PATCH /api/exts/fixed/:name returns 200", async () => {
+  it("PATCH /api/exts/fixed/:name 가 200 을 반환하는가?", async () => {
     const res = await request(app)
       .patch("/api/exts/fixed/bat")
       .send({ checked: true })
@@ -61,7 +61,7 @@ describe("routers /api/exts", () => {
     });
   });
 
-  it("DELETE /api/exts/custom/:name returns 200", async () => {
+  it("DELETE /api/exts/custom/:name 가 200 을 반환하는가?", async () => {
     await request(app).post("/api/exts/custom").send({ name: "bar" }).expect(201);
     const res = await request(app).delete("/api/exts/custom/bar").expect(200);
 
@@ -73,16 +73,22 @@ describe("routers /api/exts", () => {
     });
   });
 
-  it("DELETE /api/exts/custom 전체 삭제 후 GET 커스텀 목록이 비어 있다", async () => {
+  it("DELETE /api/exts/custom 가 200 을 반환하고 후속 GET 에서 custom 이 비는가?", async () => {
     const ts = Date.now();
     await request(app).post("/api/exts/custom").send({ name: `all1${ts}` }).expect(201);
     await request(app).post("/api/exts/custom").send({ name: `all2${ts}` }).expect(201);
-    await request(app).delete("/api/exts/custom").expect(200);
+    const delRes = await request(app).delete("/api/exts/custom").expect(200);
+    expect(delRes.body).toEqual({
+      ok: true,
+      status: 200,
+      data: { deleted: 2 },
+      error: null,
+    });
     const getRes = await request(app).get("/api/exts").expect(200);
     expect(getRes.body.data.custom).toEqual([]);
   });
 
-  it("unknown path returns 404 envelope", async () => {
+  it("알 수 없는 경로가 404 envelope 를 반환하는가?", async () => {
     const res = await request(app).get("/api/nope").expect(404);
 
     expect(res.body).toEqual({
