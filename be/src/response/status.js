@@ -19,8 +19,9 @@ export const MESSAGES = {
 export const EXT_MESSAGES = {
   NAME_REQUIRED: "확장자는 필수 입력 항목입니다",
   CHECKED_REQUIRED: "체크 여부는 필수 입력 항목입니다",
+  NAME_INVALID_CHARS: "확장자는 영문자/숫자 이외의 문자를 사용할 수 없습니다",
   NAME_TOO_LONG: "확장자는 최대 20자까지 입력할 수 있습니다",
   LIST_FULL: "커스텀 확장자는 최대 200개까지 추가할 수 있습니다",
-  NAME_ALREADY_EXISTS: "이미 존재하는 확장자입니다",
+  ALREADY_BLOCKED: "이미 차단되어 있습니다",
   NOT_FOUND: "확장자를 찾을 수 없습니다",
 };

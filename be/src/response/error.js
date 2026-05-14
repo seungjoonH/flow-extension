@@ -23,3 +23,8 @@ export class NotFoundError extends HttpError {
 export class ConflictError extends HttpError {
   constructor(message) { super(STATUS.CONFLICT, message ?? MESSAGES.CONFLICT); }
 }
+
+// 500
+export class InternalServerError extends HttpError {
+  constructor(message) { super(STATUS.INTERNAL_SERVER_ERROR, message ?? MESSAGES.INTERNAL_SERVER_ERROR); }
+}

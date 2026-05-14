@@ -13,6 +13,7 @@ export const getCustomExts = () => getExts(0); // 커스텀 확장자 조회
 
 // 확장자 단일 조회
 export const getExt = (name) => {
+  if (!name) return null;
   return db.prepare("SELECT * FROM exts WHERE name = ?").get(name);
 };
 

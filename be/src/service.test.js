@@ -43,7 +43,7 @@ describe("과제 요구사항", () => {
 
   describe("5. 커스텀 확장자를 추가할 수 있는가?", () => {
     it("추가 후 GET 응답의 custom 목록에 해당 이름이 포함된다", () => {
-      const name = `add-${Date.now()}`;
+      const name = `add${Date.now()}`;
       service.postExtsCustom({ name });
       expect(service.getExts().custom.map((c) => c.name)).toContain(name);
     });
@@ -67,11 +67,49 @@ describe("과제 요구사항", () => {
     it("삭제 후 조회 목록에 해당 이름이 없다", () => {
       let { custom } = service.getExts();
       if (custom.length >= CUSTOM_MAX) service.deleteExtsCustom(custom[0].name);
-      const name = `del-${Date.now()}`;
+      const name = `del${Date.now()}`;
       service.postExtsCustom({ name });
       expect(service.getExts().custom.some((c) => c.name === name)).toBe(true);
       service.deleteExtsCustom(name);
       expect(service.getExts().custom.some((c) => c.name === name)).toBe(false);
+    });
+  });
+});
+
+describe("추가 구현 사항", () => {
+  describe("커스텀 추가 요청이 고정 확장자와 이름이 겹칠 때", () => {
+    it("고정 확장자가 꺼져 있으면 커스텀 목록에 넣지 않고, 해당 고정 항목만 켠다", () => {
+      service.patchExtsFixed("js", { checked: false });
+      expect(service.getExts().custom.some((c) => c.name === "js")).toBe(false);
+
+      service.postExtsCustom({ name: "js" });
+
+      expect(service.getExts().fixed.find((r) => r.name === "js")?.checked).toBe(true);
+      expect(service.getExts().custom.some((c) => c.name === "js")).toBe(false);
+
+      service.patchExtsFixed("js", { checked: false });
+    });
+
+    it("커스텀 추가로 고정 항목을 켠 뒤, 같은 이름으로 다시 추가하면 이미 체크되었다는 안내로 거절한다", () => {
+      service.patchExtsFixed("exe", { checked: false });
+      service.postExtsCustom({ name: "exe" });
+      expect(service.getExts().fixed.find((r) => r.name === "exe")?.checked).toBe(true);
+
+      expect(() => service.postExtsCustom({ name: "exe" })).toThrow();
+      try { service.postExtsCustom({ name: "exe" }); } 
+      catch (e) { expect(e.message).toBe(EXT_MESSAGES.ALREADY_BLOCKED); }
+
+      service.patchExtsFixed("exe", { checked: false });
+    });
+
+    it("고정 확장자가 이미 켜져 있는데 같은 이름으로 커스텀을 추가하면, 이미 체크되었다는 안내로 거절한다", () => {
+      service.patchExtsFixed("cmd", { checked: true });
+
+      expect(() => service.postExtsCustom({ name: "cmd" })).toThrow();
+      try { service.postExtsCustom({ name: "cmd" }); } 
+      catch (e) { expect(e.message).toBe(EXT_MESSAGES.ALREADY_BLOCKED); }
+
+      service.patchExtsFixed("cmd", { checked: false });
     });
   });
 });
@@ -85,6 +123,31 @@ describe("에러 처리", () => {
       catch (e) {
         expect(e.status).toBe(STATUS.BAD_REQUEST);
         expect(e.message).toBe(EXT_MESSAGES.NAME_REQUIRED);
+      }
+    });
+
+    it("이미 존재하는 커스텀 확장자면 이미 존재 안내로 거절한다", () => {
+      const name = `dup${Date.now()}`;
+      service.postExtsCustom({ name });
+      expect(() => service.postExtsCustom({ name })).toThrow();
+      try { service.postExtsCustom({ name }); } 
+      catch (e) { expect(e.message).toBe(EXT_MESSAGES.ALREADY_BLOCKED); }
+      service.deleteExtsCustom(name);
+    });
+
+    it("영문자·숫자 이외 문자가 있으면 BadRequest(NAME_INVALID_CHARS) 를 발생시키는가?", () => {
+      expect(() => service.postExtsCustom({ name: "bad_name" })).toThrow(error.BadRequestError);
+      try { service.postExtsCustom({ name: "bad_name" }); } 
+      catch (e) {
+        expect(e.status).toBe(STATUS.BAD_REQUEST);
+        expect(e.message).toBe(EXT_MESSAGES.NAME_INVALID_CHARS);
+      }
+
+      expect(() => service.postExtsCustom({ name: "한글" })).toThrow(error.BadRequestError);
+      try { service.postExtsCustom({ name: "한글" }); } 
+      catch (e) {
+        expect(e.status).toBe(STATUS.BAD_REQUEST);
+        expect(e.message).toBe(EXT_MESSAGES.NAME_INVALID_CHARS);
       }
     });
   });

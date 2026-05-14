@@ -61,11 +61,14 @@ function Extensions() {
 
     if (disabled) return;
 
-    const { error } = await createCustomExt(newExtension);
+    const { data, error } = await createCustomExt(newExtension);
     if (error) { setError(error.message); return; } 
 
     setNewExtension("");
     await fetchExtensions();
+
+    // 커스텀 추가되었을 때만
+    if (data.checked) return;
     chipsRef.current?.scrollTo({ top: chipsRef.current.scrollHeight, behavior: "smooth" });
   }
 
