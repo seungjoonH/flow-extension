@@ -73,6 +73,15 @@ describe("routers /api/exts", () => {
     });
   });
 
+  it("DELETE /api/exts/custom 전체 삭제 후 GET 커스텀 목록이 비어 있다", async () => {
+    const ts = Date.now();
+    await request(app).post("/api/exts/custom").send({ name: `all1${ts}` }).expect(201);
+    await request(app).post("/api/exts/custom").send({ name: `all2${ts}` }).expect(201);
+    await request(app).delete("/api/exts/custom").expect(200);
+    const getRes = await request(app).get("/api/exts").expect(200);
+    expect(getRes.body.data.custom).toEqual([]);
+  });
+
   it("unknown path returns 404 envelope", async () => {
     const res = await request(app).get("/api/nope").expect(404);
 

@@ -78,4 +78,15 @@ describe("repository", () => {
       expect(repo.getCustomExts().some((c) => c.name === name)).toBe(false);
     });
   });
+
+  describe("8. 커스텀 확장자 전체 삭제", () => {
+    it("deleteAllCustomExts 후 커스텀이 비어 있고 고정 행 개수는 유지된다", () => {
+      const ts = Date.now();
+      repo.createCustomExt(`wall-${ts}-1`);
+      repo.createCustomExt(`wall-${ts}-2`);
+      repo.deleteAllCustomExts();
+      expect(repo.getCustomExts()).toEqual([]);
+      expect(repo.getFixedExts().length).toBe(FIXED_EXT_NAMES.length);
+    });
+  });
 });

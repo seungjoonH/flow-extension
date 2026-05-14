@@ -187,3 +187,17 @@ describe("에러 처리", () => {
     });
   });
 });
+
+describe("전체 삭제", () => {
+  it("deleteExtsCustomAll 호출 시 커스텀 목록이 비고 고정 확장자 행은 유지된다", () => {
+    const ts = Date.now();
+    service.postExtsCustom({ name: `walla${ts}` });
+    service.postExtsCustom({ name: `wallb${ts}` });
+    expect(service.getExts().custom.length).toBeGreaterThanOrEqual(2);
+
+    service.deleteExtsCustomAll();
+
+    expect(service.getExts().custom).toEqual([]);
+    expect(service.getExts().fixed.map((r) => r.name)).toEqual([...FIXED_EXT_NAMES]);
+  });
+});
