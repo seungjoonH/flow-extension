@@ -1,5 +1,5 @@
 {
-  "name": "flow",
+  "name": "flow-extension",
   "private": true,
   "scripts": {
     "dev": "pnpm -r --parallel run dev",
