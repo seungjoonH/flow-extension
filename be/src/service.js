@@ -73,6 +73,20 @@ export const patchExtsFixed = (name, body) => {
 
 /* 삭제 관련 */
 
+
+// 커스텀 확장자 전체 삭제
+export const deleteExtsCustomAll = () => {
+
+  // 메인 로직
+  const { changes: deleted } = repo.deleteAllCustomExts();
+
+  // 사후 throws
+  if (!deleted) throw new error.InternalServerError();
+
+  return { deleted };
+};
+
+
 // 커스텀 확장자 삭제
 export const deleteExtsCustom = (name) => {
 

@@ -39,6 +39,11 @@ export const updateFixedExt = (name, checked) => {
 
 /* 삭제 관련 */
 
+// 커스텀 확장자 전체 삭제
+export const deleteAllCustomExts = () => {
+  return db.prepare("DELETE FROM exts WHERE fixed = 0").run();
+};
+
 // 커스텀 확장자 삭제
 export const deleteCustomExt = (name) => {
   return db.prepare("DELETE FROM exts WHERE name = ?").run(name);

@@ -28,6 +28,12 @@ router.patch(extsPath("fixed", ":name"), (req, res) => {
   sendOk(res, data);
 });
 
+// DELETE /api/exts/custom
+router.delete(extsPath("custom"), (_req, res) => {
+  const data = service.deleteExtsCustomAll();
+  sendOk(res, data);
+});
+
 // DELETE /api/exts/custom/:name
 router.delete(extsPath("custom", ":name"), (req, res) => {
   const data = service.deleteExtsCustom(req.params.name);
