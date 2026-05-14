@@ -25,7 +25,7 @@ function Extensions() {
 
   const [extensions, setExtensions] = useState<Extensions>({ fixed: [], custom: [] });
   const [newExtension, setNewExtension] = useState("");
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   
   const disabled = !newExtension || error;
 
